@@ -1,0 +1,36 @@
+---
+# tasks file for jenkins
+ - name: Ensure Java is installed
+   apt:
+    name: openjdk-11-jdk
+    state: present
+   notify:
+     - Check Java version
+     - Display Java version
+
+ - name: Add Jenkins repository key
+   apt_key:
+    url: https://pkg.jenkins.io/debian/jenkins.io.key
+    state: present
+
+ - name: Add Jenkins repository
+   apt_repository:
+    repo: deb https://pkg.jenkins.io/debian-stable binary/
+    state: present
+
+ - name: Update apt and install Jenkins
+   apt:
+    name: jenkins
+    state: present
+    update_cache: yes
+   notify: restart jenkins
+ - name: Retrieve Jenkins initial admin password
+   shell: sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+   register: jenkins_initial_admin_password
+   changed_when: false
+   ignore_errors: true
+
+ - name: Display Jenkins initial admin password
+   debug:
+     msg: "Jenkins initial admin password: {{ jenkins_initial_admin_password.stdout }}"
+   when: jenkins_initial_admin_password.stdout is defined

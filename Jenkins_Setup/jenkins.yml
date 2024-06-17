@@ -1,0 +1,7 @@
+---
+- name: Jenins Setup
+  hosts: localhost
+  become: true
+  roles:
+    - jenkins
+

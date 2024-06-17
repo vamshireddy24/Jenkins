@@ -1,0 +1,20 @@
+---
+# handlers file for jenkins
+- name: Check Java version
+  shell: java -version
+  register: java_version_output
+  ignore_errors: true
+
+- name: Display Java version
+  debug:
+    msg: "Installed Java version is {{ java_version_output.stdout }}"
+  when: java_version_output.rc == 0
+
+- name: restart jenkins
+  service:
+    name: jenkins
+    state: restarted
+    enabled: yes
+
+
+
